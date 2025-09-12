@@ -20,7 +20,7 @@ This is a research framework for online reinforcement learning algorithms, built
   git clone <your-repository-url>
   cd online-rl-algorithm
   ```
-2.Create and Activate a Virtual Environment
+2. Create and Activate a Virtual Environment
   ```bash
   conda create -n online_rl python=3.10
   ```
