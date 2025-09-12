@@ -15,16 +15,16 @@ This is a research framework for online reinforcement learning algorithms, built
 - 🤖 Gymnasium Support: Test algorithms across a wide range of tasks with support for gymnasium and gymnasium-robotics environments.
 
 ## 🛠️ Installation
- 1. Clone the Repository
+1. Clone the Repository
  ```bash
   git clone <your-repository-url>
   cd online-rl-algorithm
   ```
- 2.Create and Activate a Virtual Environment
+2.Create and Activate a Virtual Environment
   ```bash
   conda create -n online_rl python=3.10
   ```
- 3. Install Dependencies
+3. Install Dependencies
   ```bash
   pip install -r requirements.txt
   ```
