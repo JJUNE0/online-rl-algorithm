@@ -17,7 +17,7 @@ This is a research framework for online reinforcement learning algorithms, built
 ## 🛠️ Installation
 1. Clone the Repository
  ```bash
-  git clone <your-repository-url>
+  git clone https://github.com/JJUNE0/online-rl-algorithm.git
   cd online-rl-algorithm
   ```
 2. Create and Activate a Virtual Environment
