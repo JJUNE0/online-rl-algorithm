@@ -5,16 +5,16 @@
 
 This is a research framework for online reinforcement learning algorithms, built on PyTorch. Designed with a modular structure, it allows for easy implementation of new algorithms and facilitates comparative experiments.
 
-# ✨ Features
-🧩 Modular Design: Code is separated by functionality (algorithms, buffers, core), making it easy to extend and maintain.
+## ✨ Features
+- 🧩 Modular Design: Code is separated by functionality (algorithms, buffers, core), making it easy to extend and maintain.
 
-🔧 Hydra-Powered Configuration: Manage all hyperparameters through .yaml files in the configs directory, ensuring high reproducibility.
+- 🔧 Hydra-Powered Configuration: Manage all hyperparameters through .yaml files in the configs directory, ensuring high reproducibility.
 
-📊 Weights & Biases Integration: Seamlessly track and visualize your training progress, results, and videos in real-time with wandb.
+- 📊 Weights & Biases Integration: Seamlessly track and visualize your training progress, results, and videos in real-time with wandb.
 
-🤖 Gymnasium Support: Test algorithms across a wide range of tasks with support for gymnasium and gymnasium-robotics environments.
+- 🤖 Gymnasium Support: Test algorithms across a wide range of tasks with support for gymnasium and gymnasium-robotics environments.
 
-🛠️ Installation
+## 🛠️ Installation
 1. Clone the Repository
 
 Bash
