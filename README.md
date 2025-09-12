@@ -1,7 +1,11 @@
-🤖 Online Reinforcement Learning Research Framework
+# 🤖 Online Reinforcement Learning Research Framework
+[![PyTorch](https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
 This is a research framework for online reinforcement learning algorithms, built on PyTorch. Designed with a modular structure, it allows for easy implementation of new algorithms and facilitates comparative experiments.
 
-✨ Features
+# ✨ Features
 🧩 Modular Design: Code is separated by functionality (algorithms, buffers, core), making it easy to extend and maintain.
 
 🔧 Hydra-Powered Configuration: Manage all hyperparameters through .yaml files in the configs directory, ensuring high reproducibility.
@@ -11,7 +15,7 @@ This is a research framework for online reinforcement learning algorithms, built
 🤖 Gymnasium Support: Test algorithms across a wide range of tasks with support for gymnasium and gymnasium-robotics environments.
 
 🛠️ Installation
-Clone the Repository
+1. Clone the Repository
 
 Bash
 
