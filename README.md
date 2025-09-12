@@ -16,18 +16,13 @@ This is a research framework for online reinforcement learning algorithms, built
 
 ## 🛠️ Installation
 1. Clone the Repository
+  '''bash
+  git clone <your-repository-url>
+  cd online-rl-algorithm
 
-Bash
-
-git clone <your-repository-url>
-cd online-rl-algorithm
-Create and Activate a Virtual Environment
-
-Bash
-
-python -m venv venv
-source venv/bin/activate  # On Linux/macOS
-# venv\Scripts\activate  # On Windows
+2.Create and Activate a Virtual Environment
+  '''bash
+  conda create -n online_rl python=3.10
 Install Dependencies
 
 Note: It is highly recommended to rename requirement.txt to the standard requirements.txt.
