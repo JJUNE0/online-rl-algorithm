@@ -1,86 +1,82 @@
-# Online Reinforcement Learning Research Framework
+🤖 Online Reinforcement Learning Research Framework
+This is a research framework for online reinforcement learning algorithms, built on PyTorch. Designed with a modular structure, it allows for easy implementation of new algorithms and facilitates comparative experiments.
 
-PyTorch 기반의 온라인 강화학습 알고리즘 연구 프레임워크입니다. 모듈화된 구조로 새로운 알고리즘을 쉽게 추가하고 비교 실험을 수행할 수 있도록 설계되었습니다.
+✨ Features
+🧩 Modular Design: Code is separated by functionality (algorithms, buffers, core), making it easy to extend and maintain.
 
-## 주요 특징
+🔧 Hydra-Powered Configuration: Manage all hyperparameters through .yaml files in the configs directory, ensuring high reproducibility.
 
-- **모듈화된 디자인**: `algorithms`, `buffers`, `core` 등 기능별로 코드가 분리되어 있어 확장 및 유지보수가 용이합니다.
-- **Hydra 기반 설정 관리**: `configs` 폴더 내의 `.yaml` 파일을 통해 실험의 모든 하이퍼파라미터를 관리하여 재현성을 높입니다.
-- **Weights & Biases (W&B) 연동**: `wandb`를 통해 학습 과정, 결과, 동영상 등을 실시간으로 트래킹하고 시각화합니다.
-- **Gymnasium 지원**: `gymnasium` 및 `gymnasium-robotics` 환경을 지원하여 다양한 환경에서 알고리즘을 테스트할 수 있습니다.
+📊 Weights & Biases Integration: Seamlessly track and visualize your training progress, results, and videos in real-time with wandb.
 
-## 설치 방법
+🤖 Gymnasium Support: Test algorithms across a wide range of tasks with support for gymnasium and gymnasium-robotics environments.
 
-1.  **저장소 클론**
-    ```bash
-    git clone <your-repository-url>
-    cd online_rl
-    ```
+🛠️ Installation
+Clone the Repository
 
-2.  **가상환경 생성 및 활성화**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # Linux/macOS
-    # venv\Scripts\activate  # Windows
-    ```
+Bash
 
-3.  **필요 라이브러리 설치**
-    > **참고**: `requirement.txt` 파일의 이름을 `requirements.txt`로 변경하는 것을 권장합니다.
+git clone <your-repository-url>
+cd online-rl-algorithm
+Create and Activate a Virtual Environment
 
-    ```bash
-    pip install -r requirements.txt
-    ```
+Bash
 
-## 실행 방법
+python -m venv venv
+source venv/bin/activate  # On Linux/macOS
+# venv\Scripts\activate  # On Windows
+Install Dependencies
 
-`main.py`를 실행하여 학습을 시작합니다. `hydra`를 통해 커맨드 라인에서 직접 설정을 변경할 수 있습니다.
+Note: It is highly recommended to rename requirement.txt to the standard requirements.txt.
 
--   **기본 실행**:
-    `configs/config.yaml`에 정의된 기본값으로 `sac` 알고리즘을 `Walker2d-v5` 환경에서 학습합니다.
+Bash
 
-    ```bash
-    python main.py
-    ```
+pip install -r requirements.txt
+🚀 Usage
+Start training by running main.py. Thanks to Hydra, you can override any configuration parameter directly from the command line.
 
--   **알고리즘 및 환경 변경**:
-    커맨드 라인에서 `algorithm`과 `env_id`를 직접 지정하여 실행할 수 있습니다.
+Basic Usage
+This command runs the default experiment defined in configs/config.yaml, which trains the SAC algorithm on the Walker2d-v5 environment.
 
-    ```bash
-    # TD3 알고리즘으로 HalfCheetah-v4 환경에서 학습
-    python main.py algorithm=td3 env_id=HalfCheetah-v4
+Bash
 
-    # TQC 알고리즘으로 Ant-v4 환경에서 학습
-    python main.py algorithm=tqc env_id=Ant-v4
-    ```
+python main.py
+Changing Algorithm and Environment
+You can easily specify the algorithm and environment from the command line.
 
--   **학습 재개**:
-    `load_model=True`와 함께 체크포인트가 저장된 경로를 `load_checkpoint_dir`로 지정하여 학습을 재개할 수 있습니다.
+Bash
 
-    ```bash
-    python main.py load_model=True load_checkpoint_dir=logs/sac/Walker2d-v5/2025-09-12_10-54-34/
-    ```
+# Train TD3 on the HalfCheetah-v4 environment
+python main.py algorithm=td3 env.env_id=HalfCheetah-v4
 
-모든 학습 결과(로그, 모델 체크포인트, 설정 파일)는 `logs/` 디렉토리 아래에 알고리즘, 환경, 타임스탬프 기반으로 자동 생성된 경로에 저장됩니다.
+# Train TQC on the Ant-v4 environment
+python main.py algorithm=tqc env.env_id=Ant-v4
+Resuming Training
+To resume a previous run, set load_model=True and provide the path to the checkpoint directory.
 
-## 구현된 알고리즘
+Bash
 
--   [SAC (Soft Actor-Critic)](algorithms/sac/)
--   [TD3 (Twin Delayed Deep Deterministic Policy Gradient)](algorithms/td3/)
--   [TD7](algorithms/td7/)
--   [TQC (Truncated Quantile Critics)](algorithms/tqc/)
--   [HRAC](algorithms/hrac/)
+python main.py load_model=True load_checkpoint_dir=logs/sac/Walker2d-v5/2025-09-12_10-54-34/
+All training artifacts—including logs, model checkpoints, and configuration files—are automatically saved to the logs/ directory, organized by algorithm, environment, and timestamp.
 
-## 프로젝트 구조
+🦾 Implemented Algorithms
+SAC (Soft Actor-Critic)
 
-```
+TD3 (Twin Delayed Deep Deterministic Policy Gradient)
+
+TD7
+
+TQC (Truncated Quantile Critics)
+
+HRAC
+
+📁 Project Structure
 /
-├───main.py                 # 메인 실행 파일
-├───requirements.txt        # 의존성 라이브러리 목록
-├───algorithms/             # 강화학습 알고리즘 구현
-├───buffers/                # 리플레이 버퍼 구현
-├───configs/                # Hydra 설정 (.yaml) 파일
-├───core/                   # Trainer, Logger 등 핵심 로직
-├───envs/                   # 환경(Gymnasium) 래퍼
-├───logs/                   # 학습 로그 및 모델 체크포인트 저장
-└───utils/                  # 유틸리티 함수
-```
+├───main.py                 # Entry point for training
+├───requirements.txt        # List of project dependencies
+├───algorithms/             # Implementations of RL algorithms
+├───buffers/                # Replay buffer implementations
+├───configs/                # Hydra configuration files (.yaml)
+├───core/                   # Core logic (Trainer, Logger, etc.)
+├───envs/                   # Environment wrappers (Gymnasium)
+├───logs/                   # Directory for logs and model checkpoints
+└───utils/                  # Utility functions
