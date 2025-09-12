@@ -16,49 +16,50 @@ This is a research framework for online reinforcement learning algorithms, built
 
 ## 🛠️ Installation
 1. Clone the Repository
-  '''bash
+ ```bash
   git clone <your-repository-url>
   cd online-rl-algorithm
+  ```
 
 2.Create and Activate a Virtual Environment
-  '''bash
+  ```bash
   conda create -n online_rl python=3.10
-Install Dependencies
+  ```
+3. Install Dependencies
+  ```bash
+  pip install -r requirements.txt
+  ```
 
-Note: It is highly recommended to rename requirement.txt to the standard requirements.txt.
+## 🚀 Usage
+Start training by running [main.py]. Thanks to Hydra, you can override any configuration parameter directly from the command line.
 
-Bash
-
-pip install -r requirements.txt
-🚀 Usage
-Start training by running main.py. Thanks to Hydra, you can override any configuration parameter directly from the command line.
-
-Basic Usage
+### Basic Usage
 This command runs the default experiment defined in configs/config.yaml, which trains the SAC algorithm on the Walker2d-v5 environment.
-
-Bash
-
-python main.py
-Changing Algorithm and Environment
+  ```bash
+  python main.py
+  ```
+### Changing Algorithm and Environment
 You can easily specify the algorithm and environment from the command line.
 
-Bash
-
+  ```bash
 # Train TD3 on the HalfCheetah-v4 environment
 python main.py algorithm=td3 env.env_id=HalfCheetah-v4
 
 # Train TQC on the Ant-v4 environment
 python main.py algorithm=tqc env.env_id=Ant-v4
-Resuming Training
+```
+
+### Resuming Training
 To resume a previous run, set load_model=True and provide the path to the checkpoint directory.
 
-Bash
-
+```
 python main.py load_model=True load_checkpoint_dir=logs/sac/Walker2d-v5/2025-09-12_10-54-34/
+```
+
 All training artifacts—including logs, model checkpoints, and configuration files—are automatically saved to the logs/ directory, organized by algorithm, environment, and timestamp.
 
-🦾 Implemented Algorithms
-SAC (Soft Actor-Critic)
+## 🦾 Implemented Algorithms
+[SAC (Soft Actor-Critic)](https://arxiv.org/pdf/1801.01290)
 
 TD3 (Twin Delayed Deep Deterministic Policy Gradient)
 
@@ -68,7 +69,8 @@ TQC (Truncated Quantile Critics)
 
 HRAC
 
-📁 Project Structure
+## 📁 Project Structure
+``` bash
 /
 ├───main.py                 # Entry point for training
 ├───requirements.txt        # List of project dependencies
@@ -79,3 +81,4 @@ HRAC
 ├───envs/                   # Environment wrappers (Gymnasium)
 ├───logs/                   # Directory for logs and model checkpoints
 └───utils/                  # Utility functions
+```
