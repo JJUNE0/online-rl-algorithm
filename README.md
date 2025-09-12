@@ -15,17 +15,16 @@ This is a research framework for online reinforcement learning algorithms, built
 - 🤖 Gymnasium Support: Test algorithms across a wide range of tasks with support for gymnasium and gymnasium-robotics environments.
 
 ## 🛠️ Installation
-1. Clone the Repository
+ 1. Clone the Repository
  ```bash
   git clone <your-repository-url>
   cd online-rl-algorithm
   ```
-
-2.Create and Activate a Virtual Environment
+ 2.Create and Activate a Virtual Environment
   ```bash
   conda create -n online_rl python=3.10
   ```
-3. Install Dependencies
+ 3. Install Dependencies
   ```bash
   pip install -r requirements.txt
   ```
@@ -61,13 +60,13 @@ All training artifacts—including logs, model checkpoints, and configuration fi
 ## 🦾 Implemented Algorithms
 [SAC (Soft Actor-Critic)](https://arxiv.org/pdf/1801.01290)
 
-TD3 (Twin Delayed Deep Deterministic Policy Gradient)
+[TD3 (Twin Delayed Deep Deterministic Policy Gradient)]()
 
-TD7
+[TD7]()
 
-TQC (Truncated Quantile Critics)
+[TQC (Truncated Quantile Critics)]()
 
-HRAC
+[HRAC]()
 
 ## 📁 Project Structure
 ``` bash
