@@ -1,0 +1,11 @@
+torch
+hydra-core
+numpy
+gymnasium
+gymnasium-robotics
+mujoco
+wandb
+scipy
+numba
+onnx
+matplotlib
