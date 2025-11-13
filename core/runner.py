@@ -53,8 +53,8 @@ class Runner(object):
         self.t_policy = 0.0
         self.t_buffer_push = 0.0
         
-        self.n_policy_calls = 0             # 정책 호출 수 (rollout 중)
-        self._last_eval_reset_steps = 0     # 마지막 모니터 이후 경과 스텝
+        self.n_policy_calls = 0            
+        self._last_eval_reset_steps = 0     
 
     def load_model(self):
         """Load model optimizers and buffer from checkpoint."""
@@ -129,14 +129,6 @@ class Runner(object):
                     return
 
             reward_list.append(epi_reward)
-
-            if epi_count == 1:
-                # trainer가 현재 step 정보를 가지고 있다고 가정 (예: self.total_steps)
-                figname = f"figs/evaluation_trajectory_step_{self.total_steps}.png"
-
-                # # self.eval_env.env는 OnlineNormalizedEnv의 원본 CraneEnv를 가리킵니다.
-                # self.eval_env.plot(agent=self.learner.actor, figname=figname)
-
 
         avg_return = sum(reward_list) / len(reward_list)
         max_return = max(reward_list)
@@ -218,7 +210,6 @@ class Runner(object):
             while not (terminated or truncated):
                 step += 1
                 self.total_steps += 1
-                #print(self.total_steps)
                 
                 t0 = time.perf_counter()
                 if self.total_steps < self.config['max_random_rollout']:
@@ -230,7 +221,7 @@ class Runner(object):
                     if torch.cuda.is_available(): torch.cuda.synchronize()
                     tp1 = time.perf_counter()
                     self.t_policy += (tp1 - tp0)
-                    self.n_policy_calls += 1   # <-- 추가
+                    self.n_policy_calls += 1   
                 
                 if torch.cuda.is_available(): torch.cuda.synchronize()
                 te0 = time.perf_counter()
