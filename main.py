@@ -5,8 +5,8 @@ from omegaconf import OmegaConf
 from datetime import datetime
 
 from core.trainer import Trainer
-from envs import OpenAIGym, CraneEnv
-from envs.wrappers.welford_normalize import OnlineNormalizedEnv 
+from envs import OpenAIGym #, CraneEnv
+#from envs.wrappers.welford_normalize import OnlineNormalizedEnv 
 
 
 def log_file_directory(args):
