@@ -7,3 +7,5 @@ temperature_lr : !!float 0.0003
 n_critics : !!int 5
 n_quantiles : !!int 25
 n_drop_atoms : !!float 2
+
+use_onnx : true

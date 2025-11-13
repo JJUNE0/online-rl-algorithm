@@ -6,6 +6,8 @@ class Learner:
         self.config = config
 
         self.algorithm = copy.deepcopy(algorithm)
+        
+        self.buffer_type = self.algorithm.buffer.type
         self.buffer = self.algorithm.buffer
 
         self.actor = self.algorithm.actor
@@ -35,6 +37,8 @@ class Learner:
         self.epochs = 0
         self.total_steps = 0
 
+        self.total_losses = {}
+        
 
     def get_params(self):
         if self.encoder_optimizer is not None:
@@ -54,11 +58,14 @@ class Learner:
 
 
     def learn(self):
-        self.algorithm.train(self.buffer, self.critic_optimizer, self.critic, self.target_critic,
+        stats = self.algorithm.train(self.buffer, self.critic_optimizer, self.critic, self.target_critic,
                                   self.actor_optimizer, self.actor, self.target_actor,
                                   iteration=self.max_data_size, encoder_optimizer=self.encoder_optimizer)
 
-
+        if isinstance(stats, dict):
+            self.total_losses = stats
+        else:
+            self.total_losses = {}
 
 
 

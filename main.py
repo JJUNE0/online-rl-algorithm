@@ -5,12 +5,12 @@ from omegaconf import OmegaConf
 from datetime import datetime
 
 from core.trainer import Trainer
-from envs.openai.openai_gym import OpenAIGym
+from envs import OpenAIGym, CraneEnv
+from envs.wrappers.welford_normalize import OnlineNormalizedEnv 
 
 
 def log_file_directory(args):
     if args.load_model:
-        # 학습을 재개할 경우, 기존 경로를 그대로 사용
         save_path = args.load_checkpoint_dir
         timestamp = Path(save_path.rstrip("/")).name 
         print(f"Resuming training. Checkpoints will be saved to: {save_path}")
@@ -29,7 +29,6 @@ def log_file_directory(args):
             print(f"Warning: Configuration file not found at {config_load_path}. Using current settings.")
         
     else:
-        # 새로 학습할 경우, 타임스탬프가 포함된 새 경로 생성
         current_time = datetime.now()
         timestamp = current_time.strftime("%Y-%m-%d_%H-%M-%S")
         save_path = f'logs/{args.algorithm.name}/{args.env_id}/{timestamp}/'
@@ -52,6 +51,9 @@ def main(args):
     if args.env_type == "gymnasium":
         env = OpenAIGym(env_id=args.env_id)
         eval_env = OpenAIGym(env_id=args.env_id)
+    elif args.env_type == "gtsu":
+        env =CraneEnv(fmu_filename=args.fmu_filename)    
+        eval_env =CraneEnv(fmu_filename=args.fmu_filename)        
     else:
         raise NotImplementedError
 

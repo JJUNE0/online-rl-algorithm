@@ -34,12 +34,12 @@ class SAC(BaseAlgorithm):
             critic_optimizer.zero_grad()
             with torch.no_grad():
                 next_actions, next_log_pis, _ = policy.sample(next_states)
-                next_q_values_A, next_q_values_B = target_critic(next_states, next_actions)
-                next_q_values = torch.min(next_q_values_A, next_q_values_B) - self.log_alpha.exp() * next_log_pis
+                next_q_values_1, next_q_values_2 = target_critic(next_states, next_actions)
+                next_q_values = torch.min(next_q_values_1, next_q_values_2) - self.log_alpha.exp() * next_log_pis
                 target_q_values = rewards + (1 - dones) * self.config['gamma'] * next_q_values
 
-            q_values_A, q_values_B = critic(states, actions)
-            critic_loss = ((q_values_A - target_q_values) ** 2).mean() + ((q_values_B - target_q_values) ** 2).mean()
+            q_values_1, q_values_2 = critic(states, actions)
+            critic_loss = ((q_values_1 - target_q_values) ** 2).mean() + ((q_values_2 - target_q_values) ** 2).mean()
 
             critic_loss.backward()
             critic_optimizer.step()
@@ -47,11 +47,11 @@ class SAC(BaseAlgorithm):
             # Train the Actor Loss
             policy_optimizer.zero_grad()
             actions, log_pis, _ = policy.sample(states)
-            q_values_A, q_values_B = critic(states, actions)
-            q_values = torch.min(q_values_A, q_values_B)
+            q_values_1, q_values_2 = critic(states, actions)
+            q_values = torch.min(q_values_1, q_values_2)
 
-            policy_loss = (self.log_alpha.exp().detach() * log_pis - q_values).mean()
-            policy_loss.backward()
+            actor_loss = (self.log_alpha.exp().detach() * log_pis - q_values).mean()
+            actor_loss.backward()
             policy_optimizer.step()
 
             # Train the Entropy Temperature
@@ -63,5 +63,12 @@ class SAC(BaseAlgorithm):
             # Target-Critic (Soft) Update
             soft_update(critic, target_critic, self.tau)
 
+        return {
+                    "critic": float(critic_loss.detach().cpu()),
+                    "actor": float(actor_loss.detach().cpu()),
+                    "q1": float(q_values_1.mean().detach().cpu()),
+                    "q2": float(q_values_2.mean().detach().cpu()),
+                
+                }
 
 

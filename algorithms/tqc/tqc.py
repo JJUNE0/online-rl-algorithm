@@ -66,6 +66,13 @@ class TQC(BaseAlgorithm):
             # Target-Critic (Soft) Update
             soft_update(critic, target_critic, self.tau)
 
+        return {
+                    "critic": float(critic_loss.detach().cpu()),
+                    "actor": float(actor_loss.detach().cpu()),
+                    "alpha": float(alpha_loss.mean().detach().cpu()),
+                
+                }
+    
 # ================================================================================= #
 # =================================== ONNX ======================================== #
 # ================================================================================= #

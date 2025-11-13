@@ -34,23 +34,24 @@ class OffPolicyLogger:
                     'buffer': buffer}, checkpoint_dir + '/checkpoint.pt')
 
         torch.save(policy.state_dict(), checkpoint_dir + '/policy.pt')
-
-        with torch.no_grad():
-            
-            device = next(policy.parameters()).device
-            dummy_input = torch.randn((policy.obs_dim,), device=device)
-            policy.eval()
-            
-            onnx_policy = create_onnx_policy(policy, algorithm=meta_data['algorithm'])
-            torch.onnx.export(
-                onnx_policy,
-                dummy_input,
-                checkpoint_dir + '/onnx_policy.onnx',
-                input_names=["state"],
-                output_names=["action"]
-            )
-            
-            policy.train()
+        
+        if self.config['algorithm']['use_onnx']:
+            with torch.no_grad():
+                
+                device = next(policy.parameters()).device
+                dummy_input = torch.randn((policy.obs_dim,), device=device)
+                policy.eval()
+                
+                onnx_policy = create_onnx_policy(policy, algorithm=meta_data['algorithm'])
+                torch.onnx.export(
+                    onnx_policy,
+                    dummy_input,
+                    checkpoint_dir + '/onnx_policy.onnx',
+                    input_names=["state"],
+                    output_names=["action"]
+                )
+                
+                policy.train()
         return
 
     def log(self, policy, critic, policy_optimizer_state_dict, critic_optimizer_state_dict,

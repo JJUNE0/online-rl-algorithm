@@ -5,6 +5,20 @@ import torch
 import inspect
 import time
 import datetime
+import wandb
+
+from utils.utils import _get_default
+
+
+import time
+import numpy as np
+from collections import deque
+from utils import wandb_utils
+
+GREEN = "\033[92m"
+CYAN  = "\033[96m"
+BOLD  = "\033[1m"
+RESET = "\033[0m"
 
 
 class Runner(object):
@@ -22,7 +36,6 @@ class Runner(object):
         self.total_steps = 0
         self.total_episodes = 0
         self.best_return = float("-inf")
-        self.logger = OffPolicyLogger(config)
         self.start_time = time.time()
 
         # Create the components of the AC architecture.
@@ -31,6 +44,17 @@ class Runner(object):
         # Load the saved model.
         if self.config['load_model']:
             self.load_model()
+            
+        self.logger = OffPolicyLogger(config)
+        
+        self.wb = wandb_utils.init_wandb(config, group_name=config['algorithm']['name'])
+    
+        self.t_env = 0.0
+        self.t_policy = 0.0
+        self.t_buffer_push = 0.0
+        
+        self.n_policy_calls = 0             # 정책 호출 수 (rollout 중)
+        self._last_eval_reset_steps = 0     # 마지막 모니터 이후 경과 스텝
 
     def load_model(self):
         """Load model optimizers and buffer from checkpoint."""
@@ -60,19 +84,45 @@ class Runner(object):
 
     def evaluate(self):
         reward_list = []
+        pol_ms_list = []
+        history_len = self.learner.actor.core.max_len
         for epi_count in range(1, self.config['eval_episodes'] + 1):
             epi_reward = 0
+
             state, _ = self.eval_env.reset()
+            
+            if self.learner.buffer.type == 'sequence':
+                state_history = deque(maxlen=history_len)
+                initial_state_pad = np.zeros_like(state)
+                for _ in range(history_len - 1):
+                    state_history.append(initial_state_pad)
+                state_history.append(state)
+            
             terminated = False
             truncated = False
             while not (terminated or truncated):
-                action, _ = self.learner.actor.get_action(state, eval=True)
+                t0 = time.perf_counter()
+                # TODO 오히려 잘 안됨...
+                if self.learner.buffer.type == 'sequence':
+                    current_history = np.array(state_history) # shape: (T, S)
+                    action, _ = self.learner.actor.get_action(current_history, eval=True)
+                else:
+                    action, _ = self.learner.actor.get_action(state, eval=True)
+                if torch.cuda.is_available():
+                    torch.cuda.synchronize()   # GPU 이벤트 flush
+                t1 = time.perf_counter()
+                pol_ms_list.append((t1 - t0) * 1000.0)
+                
                 try:
                     next_state, reward, terminated, truncated, info = self.eval_env.step(action)
                 except ValueError:
                     next_state, reward, terminated, truncated, info = self.eval_env.step(action[0])
 
-                state = next_state
+                
+                if self.learner.buffer.type == 'sequence':
+                    state_history.append(next_state)
+                else:
+                    state = next_state
                 epi_reward += reward
 
                 if self.stop_flag:
@@ -80,17 +130,55 @@ class Runner(object):
 
             reward_list.append(epi_reward)
 
+            if epi_count == 1:
+                # trainer가 현재 step 정보를 가지고 있다고 가정 (예: self.total_steps)
+                figname = f"figs/evaluation_trajectory_step_{self.total_steps}.png"
+
+                # # self.eval_env.env는 OnlineNormalizedEnv의 원본 CraneEnv를 가리킵니다.
+                # self.eval_env.plot(agent=self.learner.actor, figname=figname)
+
+
         avg_return = sum(reward_list) / len(reward_list)
         max_return = max(reward_list)
         min_return = min(reward_list)
 
+        if len(pol_ms_list) > 0:
+            pol_ms_avg = float(np.mean(pol_ms_list))
+            pol_ms_p95 = float(np.percentile(pol_ms_list, 95))
+        else:
+            pol_ms_avg, pol_ms_p95 = 0.0, 0.0
+
+        wandb_utils.log_speed(self.wb, self.total_steps, {
+                "speed/policy_ms_avg": pol_ms_avg,
+                "speed/policy_ms_p95": pol_ms_p95,
+            })
+        
         return avg_return, max_return, min_return
 
     def monitor(self):
         avg_return, max_return, min_return = self.evaluate()
-        print("Evaluation  | Steps {}  |  Episodes {}  |  Average return {:.2f}  |  Max return: {:.2f}  |  "
-              "Min return: {:.2f}".format(self.total_steps, self.total_episodes, avg_return, max_return, min_return))
-
+        
+        pol_calls = max(1, self.n_policy_calls)
+        pol_ms = (self.t_policy * 1e3) / pol_calls
+        env_steps_since = max(1, self.total_steps - self._last_eval_reset_steps)
+        env_ms = (self.t_env * 1e3) / env_steps_since
+        push_ms = (self.t_buffer_push * 1e3) / env_steps_since
+        
+        print(
+            f"{GREEN}{BOLD}[Evaluation]{RESET}  | Steps {self.total_steps}  |  Episodes {self.total_episodes}  |  "
+            f"Average return {avg_return:.2f}  |  Max return: {max_return:.2f}  |  Min return: {min_return:.2f}"
+        )
+        print(
+            f"{CYAN}{BOLD}[Rollout]{RESET} policy {pol_ms:.3f} ms/call | "
+            f"env {env_ms:.3f} ms/step | push {push_ms:.3f} ms/step"
+        )
+        wandb_utils.log_speed(self.wb, self.total_steps, {
+            "speed/rollout_policy_ms_per_call": pol_ms,
+            "speed/rollout_env_ms_per_step": env_ms,
+            "speed/rollout_push_ms_per_step": push_ms,
+            })
+        wandb_utils.log_eval(self.wb, self.total_steps, self.total_episodes, avg_return, max_return, min_return)
+        
         if self.config['save_model']:
             (policy, critic, policy_optimizer_state_dict, critic_optimizer_state_dict, encoder_optimizer_state_dict,
              log_alpha, alpha_optimizer_state_dict, buffer) = self.learner.get_params()
@@ -125,26 +213,50 @@ class Runner(object):
 
             state, _ = self.env.reset()
             terminated, truncated = False, False
-
+            episode_start = True
+            
             while not (terminated or truncated):
                 step += 1
                 self.total_steps += 1
                 #print(self.total_steps)
                 
+                t0 = time.perf_counter()
                 if self.total_steps < self.config['max_random_rollout']:
                     action = self.env.random_action_sample()
                 else:
+                    if torch.cuda.is_available(): torch.cuda.synchronize()
+                    tp0 = time.perf_counter()
                     action, _ = self.learner.actor.get_action(state, eval=False)
-
+                    if torch.cuda.is_available(): torch.cuda.synchronize()
+                    tp1 = time.perf_counter()
+                    self.t_policy += (tp1 - tp0)
+                    self.n_policy_calls += 1   # <-- 추가
+                
+                if torch.cuda.is_available(): torch.cuda.synchronize()
+                te0 = time.perf_counter()
                 next_states, reward, terminated, truncated, info = self.env.step(action)
+                if torch.cuda.is_available(): torch.cuda.synchronize()
+                te1 = time.perf_counter()
+                self.t_env += (te1 - te0)
                 true_done = 0.0 if truncated else float(terminated or truncated)
-                self.learner.buffer.push(state, action, reward, next_states, true_done)
-
+                
+                tb0 = time.perf_counter()
+                if self.learner.buffer.type == 'sequence':
+                    self.learner.buffer.push(state, action, reward, next_states, true_done, episode_start)
+                else:
+                    self.learner.buffer.push(state, action, reward, next_states, true_done)
+                tb1 = time.perf_counter()
+                self.t_buffer_push += (tb1 - tb0)
+                
+                episode_start = bool(terminated or truncated)
                 epi_return += reward
                 state = next_states
 
                 if (self.total_steps % self.config['max_rollout']) == 0 and (self.total_steps > self.config['update_after']):
                     self.learner.learn()
+                    wandb_utils.log_train(self.wb, self.total_steps, self.total_episodes,
+                                      epi_return=None,
+                                      total_losses=getattr(self.learner, "total_losses", None))
 
                 if (self.total_steps % self.config['eval_freq']) == 0:
                     self.monitor()
@@ -154,6 +266,7 @@ class Runner(object):
                     self.stop_flag = True
 
                 if self.stop_flag:
+                    wandb_utils.finish(self.wb)
                     return
 
 

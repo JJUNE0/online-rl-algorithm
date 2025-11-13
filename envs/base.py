@@ -11,7 +11,6 @@ class BaseEnv(ABC):
         self.action_bound: list
         super().__init__()
 
-    @staticmethod
     @abstractmethod
     def seed(self, seed):
         '''

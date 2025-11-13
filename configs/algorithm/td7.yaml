@@ -15,3 +15,5 @@ LAP_alpha : !!float 0.4
 encoder_lr : !!float 0.0003
 
 policy_update_delay : !!int 2
+
+use_onnx : true

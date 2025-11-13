@@ -1,8 +1,8 @@
 import numpy as np
 from typing import (Tuple, TypeVar, SupportsFloat, Any, Union)
 from envs.base import BaseEnv
-ActType = TypeVar("ActType")
 
+ActType = TypeVar("ActType")
 
 class NormalizedEnv(BaseEnv):
     def __init__(self, env):

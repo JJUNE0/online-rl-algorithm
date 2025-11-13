@@ -2,6 +2,11 @@ import torch
 import torch.nn as nn
 import copy
 
+from typing import Any 
+
+def _get_default(val: Any, default: Any):
+    return val if val is not None else default
+
 def weight_init(m):
     """Custom weight init for Conv2D and Linear layers.
         Reference: https://github.com/MishaLaskin/rad/blob/master/curl_sac.py"""
@@ -40,6 +45,7 @@ def create_onnx_policy(src, algorithm):
     from algorithms.td3.network import TD3ONNXPolicy
     from algorithms.td7.network import TD7ONNXPolicy
     from algorithms.tqc.network import TQCONNXPolicy
+    from algorithms.ddpg.network import DDPGONNXPolicy
 
     if algorithm == 'tqc':
         onnx_policy = TQCONNXPolicy(src.obs_dim, src.act_dim, src.hidden_dims, src.action_bound, src.activation_fc_name)
@@ -57,6 +63,11 @@ def create_onnx_policy(src, algorithm):
         onnx_policy.output_layer = copy.deepcopy(src.mean_layer)
     elif algorithm == 'td3':
         onnx_policy = TD3ONNXPolicy(src.obs_dim, src.act_dim, src.action_bound, src.hidden_dims, src.activation_fc_name)
+        onnx_policy.input_layer = copy.deepcopy(src.input_layer)
+        onnx_policy.hidden_layers = copy.deepcopy(src.hidden_layers)
+        onnx_policy.output_layer = copy.deepcopy(src.output_layer)
+    elif algorithm == 'ddpg':
+        onnx_policy = DDPGONNXPolicy(src.obs_dim, src.act_dim, src.action_bound, src.hidden_dims, src.activation_fc_name)
         onnx_policy.input_layer = copy.deepcopy(src.input_layer)
         onnx_policy.hidden_layers = copy.deepcopy(src.hidden_layers)
         onnx_policy.output_layer = copy.deepcopy(src.output_layer)

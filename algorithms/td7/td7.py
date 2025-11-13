@@ -137,3 +137,8 @@ class TD7(BaseAlgorithm):
 
                 self.max_target = self.max
                 self.min_target = self.min
+
+        return {
+                    "critic": float(critic_loss.detach().cpu()),
+                    "actor": float(actor_loss.detach().cpu()),                
+                }

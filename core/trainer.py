@@ -1,18 +1,12 @@
-from algorithms import SAC, TD3, TQC, TD7
+from algorithms import SAC, TD3, TQC, TD7, HRMTD3, TFHRMTD3, HRMTD3_RNN
 from .runner import Runner
 
 import torch
-import os
-import datetime
-import inspect
-import yaml
+
 from typing import Any
 import numpy as np
-import wandb
 
-
-def _get_default(val: Any, default: Any):
-    return val if val is not None else default
+from utils.utils import _get_default
 
 class Trainer:
     def __init__(self, env, eval_env, config):
@@ -31,19 +25,6 @@ class Trainer:
         # Check CUDA environment
         if config['device'] == 'cuda' and not torch.cuda.is_available():
             config['device'] = 'cpu'
-        
-        group_name = getattr(self.config, "wandb_group", "default")
-        
-        if getattr(self.config, "use_wandb", False):
-            wandb.init(
-                config=vars(self.config),
-                project=_get_default(getattr(self.config, "wandb_project", None), "online_rl_pytorch"),
-                entity=getattr(self.config, "wandb_team", None),
-                group=group_name,
-                job_type="train_agent",
-                name=f"{group_name}-seed{seed}"
-            )
-
             
         if self.algorithm.name in ['td7', 'TD7']:
             algorithm = TD7(env, config)
@@ -53,8 +34,22 @@ class Trainer:
             algorithm = SAC(env, config)
         elif self.algorithm.name in ['td3', 'TD3']:
             algorithm = TD3(env, config)
+        elif self.algorithm.name in ['ddpg', 'DDPG']:
+            algorithm = TD3(env, config)
+        # elif self.algorithm.name in ['hrmtd3']:
+        #     algorithm = HRMTD3(env, config)
+        #     config['save_model']=False
+        # elif self.algorithm.name in ['tfhrmtd3']:
+        #     algorithm = TFHRMTD3(env, config)
+        #     config['save_model']=False
+        # elif self.algorithm.name in ['tfhrmtd3']:
+        #     algorithm = TFHRMTD3(env, config)
+        #     config['save_model']=False
+        # elif self.algorithm.name in ['hrmtd3_rnn' , 'hrmtd3_lstm', 'hrmtd3_gru']:
+        #     algorithm = HRMTD3_RNN(env, config)
+        #     config['save_model']=False
         else:
-            print("Choose an algorithm in {'TQC', 'TD7'}.")
+            print("Check algorithm.name in configs/algorithm")
             raise NameError
         
         self.runner = Runner(env, eval_env, algorithm, config)

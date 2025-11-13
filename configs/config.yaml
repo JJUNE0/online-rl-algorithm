@@ -1,10 +1,13 @@
 defaults:
-  - algorithm: td3   # "algorithm 그룹에서 sac.yaml 파일을 기본으로 사용하겠다"는 의미
+  - algorithm: td3   
   - _self_ 
 
 # env
 env_type : !!str gymnasium
 env_id : !!str Walker2d-v5
+
+fmu_filename : !!str  models/Grab_Dynamic_linux.fmu
+
 
 # Common Configurations
 random_seed : !!int 1
@@ -25,7 +28,7 @@ critic_lr : !!float 0.0003
 # Configurations for Offline Algorithms
 buffer_capacity : !!int 1000000
 update_after : !!int 1000
-max_random_rollout : !!int 10000
+max_random_rollout : !!int 2000
 tau : !!float 0.005
 
 # Evaluation & Logging Configurations
@@ -48,7 +51,7 @@ load_model : !!bool false
 load_checkpoint_dir : ''   # Relative dir. Example: SAC_HalfCheetah-v4_2024-04-28_03:10:36/checkpoint_5
 
 # Logging
-use_wandb : !!bool false
+use_wandb : !!bool True
 wandb_project: !!str online_rl
 wandb_team : None
 wandb_group: !!str default-group

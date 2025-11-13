@@ -8,19 +8,13 @@ class Critic(BaseCritic):
     def __init__(self, obs_dim, act_dim, hidden_dims, activation_fc_name):
         super(Critic, self).__init__(activation_fc_name)
 
-        self.input_layer_A = nn.Linear(obs_dim + act_dim, hidden_dims[0])
-        self.hidden_layers_A = nn.ModuleList()
+        self.input_layer = nn.Linear(obs_dim + act_dim, hidden_dims[0])
+        self.hidden_layers = nn.ModuleList()
         for i in range(len(hidden_dims)-1):
-            hidden_layer_A = nn.Linear(hidden_dims[i], hidden_dims[i+1])
-            self.hidden_layers_A.append(hidden_layer_A)
-        self.output_layer_A = nn.Linear(hidden_dims[-1], 1)
-
-        self.input_layer_B = nn.Linear(obs_dim + act_dim, hidden_dims[0])
-        self.hidden_layers_B = nn.ModuleList()
-        for i in range(len(hidden_dims)-1):
-            hidden_layer_B = nn.Linear(hidden_dims[i], hidden_dims[i+1])
-            self.hidden_layers_B.append(hidden_layer_B)
-        self.output_layer_B = nn.Linear(hidden_dims[-1], 1)
+            hidden_layer = nn.Linear(hidden_dims[i], hidden_dims[i+1])
+            self.hidden_layers.append(hidden_layer)
+        self.output_layer = nn.Linear(hidden_dims[-1], 1)
+        
         self.apply(weight_init)
 
     def to_tensor(self, state, action):
@@ -39,26 +33,11 @@ class Critic(BaseCritic):
         x, u = self.to_tensor(state, action)
         x = torch.cat([x, u], dim=1)
 
-        x_A = self.activation_fc(self.input_layer_A(x))
-        for i, hidden_layer_A in enumerate(self.hidden_layers_A):
-            x_A = self.activation_fc(hidden_layer_A(x_A))
-        x_A = self.output_layer_A(x_A)
+        x_A = self.activation_fc(self.input_layer(x))
+        for i, hidden_layer in enumerate(self.hidden_layers):
+            x_A = self.activation_fc(hidden_layer(x_A))
+        x_A = self.output_layer(x_A)
 
-        x_B = self.activation_fc(self.input_layer_B(x))
-        for i, hidden_layer_B in enumerate(self.hidden_layers_B):
-            x_B = self.activation_fc(hidden_layer_B(x_B))
-        x_B = self.output_layer_B(x_B)
-
-        return x_A, x_B
-
-    def Q_A(self, state, action):
-        x, u = self.to_tensor(state, action)
-        x = torch.cat([x, u], dim=1)
-
-        x_A = self.activation_fc(self.input_layer_A(x))
-        for i, hidden_layer_A in enumerate(self.hidden_layers_A):
-            x_A = self.activation_fc(hidden_layer_A(x_A))
-        x_A = self.output_layer_A(x_A)
         return x_A
 
 
@@ -122,9 +101,9 @@ class Actor(BaseActor):
 # ================================================================================= #
 
 
-class TD3ONNXPolicy(BaseActor):
+class DDPGONNXPolicy(BaseActor):
     def __init__(self, obs_dim, act_dim, action_bound, hidden_dims, activation_fc_name):
-        super(TD3ONNXPolicy, self).__init__(activation_fc_name)
+        super(DDPGONNXPolicy, self).__init__(activation_fc_name)
         self.out_activation_fc = torch.tanh
 
         self.input_layer = nn.Linear(obs_dim, hidden_dims[0])
