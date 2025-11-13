@@ -26,7 +26,7 @@ This is a research framework for online reinforcement learning algorithms, built
   ```
 3. Install Dependencies
   ```bash
-  pip install -r requirements.txt
+  pip install -r --upgrade requirements.txt
   ```
 
 ## 🚀 Usage
