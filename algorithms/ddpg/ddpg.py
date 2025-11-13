@@ -47,7 +47,7 @@ class DDPG(BaseAlgorithm):
             critic_optimizer.step()
             
             # Calculate the Actor Loss
-            actor_loss = -critic.Q_A(states, policy(states)).mean()
+            actor_loss = -critic(states, policy(states)).mean()
             
             policy_optimizer.zero_grad()
             actor_loss.backward()
