@@ -1,4 +1,4 @@
-from algorithms import SAC, TD3, TQC, TD7 #, HRMTD3, TFHRMTD3, HRMTD3_RNN
+from algorithms import SAC, TD3, TQC, TD7, DDPG #, HRMTD3, TFHRMTD3, HRMTD3_RNN
 from .runner import Runner
 
 import torch
@@ -35,7 +35,7 @@ class Trainer:
         elif self.algorithm.name in ['td3', 'TD3']:
             algorithm = TD3(env, config)
         elif self.algorithm.name in ['ddpg', 'DDPG']:
-            algorithm = TD3(env, config)
+            algorithm = DDPG(env, config)
         # elif self.algorithm.name in ['hrmtd3']:
         #     algorithm = HRMTD3(env, config)
         #     config['save_model']=False
