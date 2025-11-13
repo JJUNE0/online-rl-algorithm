@@ -16,4 +16,4 @@ encoder_lr : !!float 0.0003
 
 policy_update_delay : !!int 2
 
-use_onnx : true
+use_onnx : false
