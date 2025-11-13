@@ -85,13 +85,14 @@ class Runner(object):
     def evaluate(self):
         reward_list = []
         pol_ms_list = []
-        history_len = self.learner.actor.core.max_len
+        
         for epi_count in range(1, self.config['eval_episodes'] + 1):
             epi_reward = 0
 
             state, _ = self.eval_env.reset()
             
             if self.learner.buffer.type == 'sequence':
+                history_len = self.learner.actor.core.max_len
                 state_history = deque(maxlen=history_len)
                 initial_state_pad = np.zeros_like(state)
                 for _ in range(history_len - 1):

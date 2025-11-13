@@ -5,6 +5,9 @@ from buffers.base import BaseBuffer
 class OffPolicyBuffer(BaseBuffer):
     def __init__(self, obs_dim, act_dim, capacity):
         super().__init__(capacity)
+        
+        self.type = 'rollout'
+        
         self.size = 0
         self.position = 0
 
@@ -70,6 +73,8 @@ class OffPolicyBuffer(BaseBuffer):
 class LAP(BaseBuffer):
     def __init__(self, state_dim, action_dim, device, capacity=1e6, normalize_action=True, max_action=1, prioritized=True):
         super().__init__(capacity)
+        
+        self.type = 'rollout'
         # Set the device
 
         # Set the replay buffer capacity
