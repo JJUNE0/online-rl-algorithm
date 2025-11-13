@@ -44,8 +44,8 @@ You can easily specify the algorithm and environment from the command line.
 # Train TD3 on the HalfCheetah-v4 environment
 python main.py algorithm=td3 env_id=HalfCheetah-v4
 
-# Train TQC on the Ant-v4 environment
-python main.py algorithm=tqc env_id=Ant-v4
+# Train SAC on the Ant-v4 environment
+python main.py algorithm=sac env_id=Ant-v4
 ```
 
 ### Resuming Training
