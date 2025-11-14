@@ -51,9 +51,9 @@ def main(args):
     if args.env_type == "gymnasium":
         env = OpenAIGym(env_id=args.env_id)
         eval_env = OpenAIGym(env_id=args.env_id)
-    elif args.env_type == "gtsu":
-        env =CraneEnv(fmu_filename=args.fmu_filename)    
-        eval_env =CraneEnv(fmu_filename=args.fmu_filename)        
+    # elif args.env_type == "gtsu":
+    #     env =CraneEnv(fmu_filename=args.fmu_filename)    
+    #     eval_env =CraneEnv(fmu_filename=args.fmu_filename)        
     else:
         raise NotImplementedError
 

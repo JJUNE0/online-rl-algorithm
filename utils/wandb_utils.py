@@ -23,7 +23,7 @@ def init_wandb(config: Dict[str, Any], group_name: str, run_name: Optional[str] 
         return handle
 
     project = config.get("wandb_project", "online_rl")
-    run_name = run_name or f"{group_name}-seed{config.get('seed', config.get('random_seed', 0))}"
+    run_name = run_name or f"{group_name}-{config['env_id']}-seed{config.get('seed', config.get('random_seed', 0))}"
 
     if wandb.run is None:
         wandb.init(project=project, group=group_name, job_type="train_agent", name=run_name)
