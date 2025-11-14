@@ -3,6 +3,7 @@ hydra-core
 numpy
 gymnasium
 gymnasium-robotics
+gymnasium[box2d]
 mujoco
 wandb
 scipy
