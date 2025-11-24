@@ -1,0 +1,56 @@
+# DDPG
+python main.py algorithm=ddpg env_id=HalfCheetah-v5 random_seed=1
+python main.py algorithm=ddpg env_id=HalfCheetah-v5 random_seed=10
+python main.py algorithm=ddpg env_id=HalfCheetah-v5 random_seed=100
+python main.py algorithm=ddpg env_id=HalfCheetah-v5 random_seed=1000
+python main.py algorithm=ddpg env_id=HalfCheetah-v5 random_seed=10000
+
+python main.py algorithm=ddpg env_id=Ant-v5 random_seed=1
+python main.py algorithm=ddpg env_id=Ant-v5 random_seed=10
+python main.py algorithm=ddpg env_id=Ant-v5 random_seed=100
+python main.py algorithm=ddpg env_id=Ant-v5 random_seed=1000
+python main.py algorithm=ddpg env_id=Ant-v5 random_seed=10000
+
+python main.py algorithm=ddpg env_id=Walker2d-v5 random_seed=1
+python main.py algorithm=ddpg env_id=Walker2d-v5 random_seed=10
+python main.py algorithm=ddpg env_id=Walker2d-v5 random_seed=100
+python main.py algorithm=ddpg env_id=Walker2d-v5 random_seed=1000
+python main.py algorithm=ddpg env_id=Walker2d-v5 random_seed=10000
+
+# TD3
+python main.py algorithm=td3 env_id=HalfCheetah-v5 random_seed=1
+python main.py algorithm=td3 env_id=HalfCheetah-v5 random_seed=10
+python main.py algorithm=td3 env_id=HalfCheetah-v5 random_seed=100
+python main.py algorithm=td3 env_id=HalfCheetah-v5 random_seed=1000
+python main.py algorithm=td3 env_id=HalfCheetah-v5 random_seed=10000
+
+python main.py algorithm=td3 env_id=Ant-v5 random_seed=1
+python main.py algorithm=td3 env_id=Ant-v5 random_seed=10
+python main.py algorithm=td3 env_id=Ant-v5 random_seed=100
+python main.py algorithm=td3 env_id=Ant-v5 random_seed=1000
+python main.py algorithm=td3 env_id=Ant-v5 random_seed=10000
+
+python main.py algorithm=td3 env_id=Walker2d-v5 random_seed=1
+python main.py algorithm=td3 env_id=Walker2d-v5 random_seed=10
+python main.py algorithm=td3 env_id=Walker2d-v5 random_seed=100
+python main.py algorithm=td3 env_id=Walker2d-v5 random_seed=1000
+python main.py algorithm=td3 env_id=Walker2d-v5 random_seed=10000
+
+# SAC
+python main.py algorithm=sac env_id=HalfCheetah-v5 random_seed=1
+python main.py algorithm=sac env_id=HalfCheetah-v5 random_seed=10
+python main.py algorithm=sac env_id=HalfCheetah-v5 random_seed=100
+python main.py algorithm=sac env_id=HalfCheetah-v5 random_seed=1000
+python main.py algorithm=sac env_id=HalfCheetah-v5 random_seed=10000
+
+python main.py algorithm=sac env_id=Ant-v5 random_seed=1
+python main.py algorithm=sac env_id=Ant-v5 random_seed=10
+python main.py algorithm=sac env_id=Ant-v5 random_seed=100
+python main.py algorithm=sac env_id=Ant-v5 random_seed=1000
+python main.py algorithm=sac env_id=Ant-v5 random_seed=10000
+
+python main.py algorithm=sac env_id=Walker2d-v5 random_seed=1
+python main.py algorithm=sac env_id=Walker2d-v5 random_seed=10
+python main.py algorithm=sac env_id=Walker2d-v5 random_seed=100
+python main.py algorithm=sac env_id=Walker2d-v5 random_seed=1000
+python main.py algorithm=sac env_id=Walker2d-v5 random_seed=10000
