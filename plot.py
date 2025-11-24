@@ -9,6 +9,7 @@ PROJECT = "online_rl"
 # ex) ddpg-Humanoid-v5, 
 GROUP_NAME = "ddpg-Walker2d-v5"
 # ------------------
+import pickle
 
 def get_runs_data(entity: str, project: str, group: str) -> List[pd.DataFrame]:
 
@@ -63,7 +64,7 @@ def aggregate_stats(all_histories: List[pd.DataFrame]) -> pd.DataFrame:
     return stats_df
 
 
-def plot_stats(stats_df: pd.DataFrame, group_name: str):
+def plot_stats(stats_df: pd.DataFrame, group_name: str, line_color: str = "blue") -> None:
     if stats_df.empty:
         print("분석할 통계 데이터가 없습니다.")
         return
@@ -73,12 +74,12 @@ def plot_stats(stats_df: pd.DataFrame, group_name: str):
         
         plt.figure(figsize=(12, 6))
         
-        plt.plot(stats_df["global/steps"], stats_df["mean_return"], label=f"Mean Return ({group_name})", color="blue")
+        plt.plot(stats_df["global/steps"], stats_df["mean_return"], label=f"Mean Return ({group_name})", color=line_color)
         
         lower_bound = stats_df["mean_return"] - stats_df["std_return"]
         upper_bound = stats_df["mean_return"] + stats_df["std_return"]
         plt.fill_between(stats_df["global/steps"], lower_bound, upper_bound, 
-                         color="blue", alpha=0.15, label="Mean $\pm$ Std Dev")
+                         color=line_color, alpha=0.15, label="Mean $\pm$ Std Dev")
 
         plt.title(f"Evaluation Performance: {group_name}", fontsize=16)
         plt.xlabel("Total Steps (Global/steps)", fontsize=14)
@@ -106,5 +107,6 @@ if __name__ == "__main__":
         
         if run_histories:
             stats_result = aggregate_stats(run_histories)
-            
+            output_csv_filename = f"{GROUP_NAME}.csv"
+            stats_result.to_csv(output_csv_filename, index=False)            
             plot_stats(stats_result, GROUP_NAME)
