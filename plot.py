@@ -73,24 +73,19 @@ def plot_stats(stats_df: pd.DataFrame, group_name: str):
         
         plt.figure(figsize=(12, 6))
         
-        # 1. 평균 리턴 곡선 플롯
         plt.plot(stats_df["global/steps"], stats_df["mean_return"], label=f"Mean Return ({group_name})", color="blue")
         
-        # 2. 표준편차 영역 (신뢰 구간) 플롯
-        # 평균 ± 표준편차로 신뢰 영역을 나타냅니다.
         lower_bound = stats_df["mean_return"] - stats_df["std_return"]
         upper_bound = stats_df["mean_return"] + stats_df["std_return"]
         plt.fill_between(stats_df["global/steps"], lower_bound, upper_bound, 
                          color="blue", alpha=0.15, label="Mean $\pm$ Std Dev")
 
-        # 3. 그래프 레이블 및 제목 설정
-        plt.title(f"Evaluation Performance: {group_name} (Across Multiple Seeds)", fontsize=16)
+        plt.title(f"Evaluation Performance: {group_name}", fontsize=16)
         plt.xlabel("Total Steps (Global/steps)", fontsize=14)
         plt.ylabel("Average Return (Mean $\pm$ Std)", fontsize=14)
         plt.grid(True, linestyle='--', alpha=0.6)
         plt.legend()
         
-        # 4. 결과 저장
         output_filename = f"{group_name}_eval_plot.png"
         plt.savefig(output_filename)
         print(f"\n✅ 분석 결과가 '{output_filename}' 파일로 저장되었습니다.")
