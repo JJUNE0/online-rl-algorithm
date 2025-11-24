@@ -11,7 +11,7 @@ except Exception:
 
 # ---- Public API -------------------------------------------------------------
 
-def init_wandb(config: Dict[str, Any], group_name: str, run_name: Optional[str] = None) -> Dict[str, Any]:
+def init_wandb(config: Dict[str, Any]) -> Dict[str, Any]:
     """
     W&B 세션 초기화. 사용하지 않으면 no-op 핸들 반환.
     return: handle(dict) — 이후 모든 로그 함수에 넘겨서 사용.
@@ -23,7 +23,8 @@ def init_wandb(config: Dict[str, Any], group_name: str, run_name: Optional[str] 
         return handle
 
     project = config.get("wandb_project", "online_rl")
-    run_name = run_name or f"{group_name}-{config['env_id']}-seed{config.get('seed', config.get('random_seed', 0))}"
+    group_name = f"{config['algorithm']['name']}-{config['env_id']}"
+    run_name =  f"{group_name}-seed{config.get('random_seed', 0)}"
 
     if wandb.run is None:
         wandb.init(project=project, group=group_name, job_type="train_agent", name=run_name)

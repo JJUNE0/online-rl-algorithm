@@ -11,3 +11,5 @@ numba
 onnx
 matplotlib
 onnxscript
+pandas
+seaborn

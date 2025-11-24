@@ -47,7 +47,7 @@ class Runner(object):
             
         self.logger = OffPolicyLogger(config)
         
-        self.wb = wandb_utils.init_wandb(config, group_name=config['algorithm']['name'])
+        self.wb = wandb_utils.init_wandb(config)
     
         self.t_env = 0.0
         self.t_policy = 0.0

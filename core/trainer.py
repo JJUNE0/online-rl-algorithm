@@ -16,7 +16,8 @@ class Trainer:
         self.algorithm = config.algorithm
         self.config = config
         
-        seed = _get_default(getattr(config, "seed", None), 0) 
+        seed = _get_default(getattr(config, "random_seed", None), 0)
+        print(f"Seed : {seed}") 
         np.random.seed(seed)
         torch.manual_seed(seed)
         if torch.cuda.is_available():
